@@ -7,6 +7,6 @@
 <p>pastebin get PYW8zN6s install.lua</p>
 <p>install.lua</p>
 <p>Or you can run:</p>
-<p>wget run https://github.com/MeLlamoGamer/PDA_OS-ComputerCraft/blob/aaa06529063cf9a4e741b1e28c89a518afeb65e6/install.lua</p>
+<p>wget run https://raw.githubusercontent.com/MeLlamoGamer/PDA_OS-ComputerCraft/aaa06529063cf9a4e741b1e28c89a518afeb65e6/install.lua</p>
 <br>
 <p>Credits to <a href=https://www.youtube.com/@Homelab>Homelab</a> for the base code of the OS</p>
