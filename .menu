@@ -1,0 +1,63 @@
+os.pullEvent = os.pullEventRaw
+ 
+local w,h = term.getSize()
+ 
+function printCentered( y,s )
+   local x = math.floor((w - string.len(s)) / 2)
+   term.setCursorPos(x,y)
+   term.clearLine()
+   term.write( s )
+end
+ 
+local nOption = 1
+ 
+local function drawMenu()
+   term.clear()
+   term.setCursorPos(w-11,1)
+   if nOption == 1 then
+   term.write("CMD")
+elseif nOption == 2 then
+   term.write("Apps")
+elseif nOption == 3 then
+   term.write("Power")
+else
+end 
+end
+ 
+--GUI
+term.clear()
+local function drawFrontend()
+   printCentered( math.floor(h/2) - 3, "")
+   printCentered( math.floor(h/2) - 2, "Start Menu" )
+   printCentered( math.floor(h/2) - 1, "")
+   printCentered( math.floor(h/2) + 0, ((nOption == 1) and "[CMD]") or "CMD " )
+   printCentered( math.floor(h/2) + 1, ((nOption == 2) and "[Apps]") or "Apps" )
+   printCentered( math.floor(h/2) + 2, ((nOption == 3) and "[Power]") or "Power" )
+
+end
+ 
+--drawMenu()
+drawFrontend()
+while true do
+local event, key = os.pullEvent("key")
+if key == keys.down and nOption < 3 then
+    nOption = nOption + 1
+  --  drawMenu()
+    drawFrontend()
+elseif key == keys.up and nOption > 1 then
+    nOption = nOption -1
+    --drawMenu()
+    drawFrontend()
+elseif key == keys.enter then
+    if nOption == 1 then
+    shell.run("os/.command")
+    break
+    elseif nOption == 2 then
+    shell.run("os/.apps")
+    break
+    elseif nOption == 3 then
+    shell.run("os/.power")
+    break
+    end
+end
+end    
