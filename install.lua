@@ -2,6 +2,14 @@ if pocket then
 	print("Welcome to the PDA_OS installation.")
 	print("The installation process will begin...")
 	print("--------------------------------------")
+	print("Deleting old files...")
+	shell.run("delete", "startup.lua")
+	shell.run("delete", ".back")
+	shell.run("delete", ".menu")
+	shell.run("delete", "os")
+	shell.run("delete", "programs")
+	print("Creating and Downloading files...")
+	sleep(3)
 	shell.run("mkdir", "os")
 	shell.run("mkdir", "programs")
 	wget https://github.com/MeLlamoGamer/PDA_OS-ComputerCraft/blob/main/startup.lua startup.lua
@@ -13,4 +21,8 @@ if pocket then
 	wget https://github.com/MeLlamoGamer/PDA_OS-ComputerCraft/blob/main/os/.command os/.command
 	wget https://github.com/MeLlamoGamer/PDA_OS-ComputerCraft/blob/main/os/.power os/.power
 	print("The installation finished successfully, rebooting...")
+	sleep(3)
 	os.reboot()
+else
+	print("This OS must run on a Pocket PC")
+end
