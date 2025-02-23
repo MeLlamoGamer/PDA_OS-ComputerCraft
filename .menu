@@ -4,6 +4,8 @@ local w,h = term.getSize()
 
 
 function getAntID()
+    antPosX = 2600
+    antPosZ = 2600
     peripheral.find("modem", rednet.open)
     rednet.send(558, "$getAntID")
     antID, antName = rednet.receive(2)
