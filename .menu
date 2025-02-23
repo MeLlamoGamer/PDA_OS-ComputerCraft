@@ -1,5 +1,7 @@
-os.pullEvent = os.pullEventRaw 
+local basalt = require("basalt")
+--os.pullEvent = os.pullEventRaw 
 local w,h = term.getSize()
+
 
 function getAntID()
     peripheral.find("modem", rednet.open)
@@ -15,82 +17,119 @@ function getAntID()
     rednet.close()
     end
 end
-
 function getAntPos()
     antennaPos = vector.new(antPosX, antPosY, antPosZ)
     position = vector.new(gps.locate(5))
     displacement = position - antennaPos
-    blocksAway = displacement.x + displacement.y + displacement.z
+    blocksAway = displacement.x + displacement.z
     if blocksAway < 0 then
         blocksAway = math.abs(blocksAway)
     end
 end
 
 getAntID()
-getAntPos()
-  
-function printCentered( y,s )
-   local x = math.floor((w - string.len(s)) / 2)
-   term.setCursorPos(x,y)
-   term.clearLine()
-   term.write( s )
-end
- 
-local nOption = 1
- 
-local function drawMenu()
-   term.clear()
-   term.setCursorPos(w-25,1)
-   print(antName)
-   term.setCursorPos(w-2,1)
-   if blocksAway >= 0 and blocksAway <= 44 then
-   print("###")
-   elseif blocksAway >= 45 and blocksAway <= 119 then
-   print("##-")
-   elseif blocksAway >= 120 and blocksAway <= 159 then
-   print("#--")
-   elseif blocksAway >= 160 then
-   print("---")
-   end 
-end
- 
+getAntPos()  
 --GUI
-term.clear()
-local function drawFrontend()
-   printCentered( math.floor(h/2) - 3, "")
-   printCentered( math.floor(h/2) - 2, "Start Menu" )
-   printCentered( math.floor(h/2) - 1, "")
-   printCentered( math.floor(h/2) + 0, ((nOption == 1) and "[CMD]") or "CMD " )
-   printCentered( math.floor(h/2) + 1, ((nOption == 2) and "[Apps]") or "Apps" )
-   printCentered( math.floor(h/2) + 2, ((nOption == 3) and "[Power]") or "Power" )
-end
- 
-drawMenu()
-drawFrontend()
 
-while true do
-    local event, key = os.pullEvent("key")
-    if key == keys.down and nOption < 3 then
-        nOption = nOption + 1
-        drawMenu()
-        drawFrontend()
-    --    getAntPos()
-    elseif key == keys.up and nOption > 1 then
-        nOption = nOption -1
-        drawMenu()
-        drawFrontend()
-    --    getAntPos()
-    elseif key == keys.enter then
-        if nOption == 1 then
-            shell.run("os/.command")
-            break
-        elseif nOption == 2 then
-            shell.run("os/.apps")
-            break
-        elseif nOption == 3 then
+local main = basalt.createFrame()
+local timer = main:addTimer()
+local button1 = main
+        :addButton()
+        :setPosition(2, 18)
+        :setText(">_")
+        :setSize(4, 3)
+        :setBackground(colors.black)
+        :setForeground(colors.green)
+        :onClick(
+            function()
+                basalt.stopUpdate()
+                shell.run("os/.command")
+        end)
+
+local listApps = main:addFrame("appsFrame")
+    listApps:hide()
+    :setSize(12,9)
+    :setPosition(8, 5)
+    listApps:addButton()
+    :setText("Close")
+    :setPosition(1, 1)
+    :onClick(
+        function()
+            listApps:hide()
+        end)
+        :setBorder(colors.green, "left", "right", "bottom", "top")
+    listApps:addButton()
+    :setPosition(1, 4)
+    :setText("Chat")
+    :onClick(
+        function()
+            basalt.stopUpdate()
+            shell.run("programs/chat.lua")
+        end)
+        :setBorder(colors.green, "left", "right", "bottom", "top")
+    listApps:addButton()
+        :setPosition(1, 7)
+        :setText("FTP")
+        :onClick(
+            function()
+                basalt.stopUpdate()
+                shell.run("programs/ftpcli.lua")
+            end)
+            :setBorder(colors.green, "left", "right", "bottom", "top")
+local button2 = main
+    :addButton()
+    :setPosition(10, 18)
+    :setText("APPs")
+    :setSize(6, 3)
+    :onClick(
+        function()
+            listApps:show()
+        end)
+local button3 = main
+    :addButton()
+    :setPosition(19, 18)
+    :setText("Power")
+    :setBackground(colors.red)
+    :setForeground(colors.white)
+    :setSize(7, 3)
+    :onClick(
+        function()
+            basalt.stopUpdate()
             shell.run("os/.power")
-            break
-        end    
+        end)
+local hoursLabel = main
+    :addLabel()
+    :setPosition(1, 1)
+    :setText(formattedTime)
+
+local signalLabel = main
+    :addLabel()
+    :setPosition(24, 1)
+
+
+
+function checkBlocksAway()
+    if blocksAway >= 0 and blocksAway <= 44 then
+        signalLabel:setText("###")
+    elseif blocksAway >= 45 and blocksAway <= 119 then
+        signalLabel:setText("##-")
+    elseif blocksAway >= 120 and blocksAway <= 159 then
+        signalLabel:setText("#--")
+    elseif blocksAway >= 160 then
+        signalLabel:setText("---")
     end
-getAntPos()
 end
+
+function updateSignal()
+    while true do
+        getAntPos()
+        checkBlocksAway()
+        local time = os.time()
+local formattedTime = textutils.formatTime(time, false)
+        hoursLabel:setText(formattedTime)
+        os.sleep(1)
+    end
+end
+
+parallel.waitForAny(basalt.autoUpdate, updateSignal)
+
