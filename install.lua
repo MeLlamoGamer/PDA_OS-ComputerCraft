@@ -20,6 +20,7 @@ if pocket then
 	shell.run("wget", "https://github.com/MeLlamoGamer/PDA_OS-ComputerCraft/raw/1f9675023afa86699e29bb8fce34b39c01b1d1e1/os/.apps os/.apps")
 	shell.run("wget", "https://github.com/MeLlamoGamer/PDA_OS-ComputerCraft/raw/1f9675023afa86699e29bb8fce34b39c01b1d1e1/os/.command os/.command")
 	shell.run("wget", "https://github.com/MeLlamoGamer/PDA_OS-ComputerCraft/raw/1f9675023afa86699e29bb8fce34b39c01b1d1e1/os/.power os/.power")
+	shell.run("wget", "https://raw.githubusercontent.com/MeLlamoGamer/PDA_OS-ComputerCraft/refs/heads/main/basalt.lua basalt.lua")
 	print("The installation finished successfully, rebooting...")
 	sleep(3)
 	os.reboot()
